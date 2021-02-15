@@ -1,6 +1,6 @@
 ﻿namespace WindowsFormVideoThumbnails
 {
-    partial class MainForm
+    partial class MainFor
     {
         /// <summary>
         /// Required designer variable.
@@ -28,14 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.startDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.endDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.explorerTextBox = new System.Windows.Forms.TextBox();
             this.chooseFolderBtn = new System.Windows.Forms.Button();
-            this.filesListBox = new System.Windows.Forms.ListBox();
             this.listFilesBtn = new System.Windows.Forms.Button();
             this.convertBtn = new System.Windows.Forms.Button();
+            this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.listView = new System.Windows.Forms.ListView();
             this.SuspendLayout();
             // 
             // startDateTimePicker
@@ -70,14 +72,6 @@
             this.chooseFolderBtn.UseVisualStyleBackColor = true;
             this.chooseFolderBtn.Click += new System.EventHandler(this.chooseFolderBtn_Click);
             // 
-            // filesListBox
-            // 
-            this.filesListBox.FormattingEnabled = true;
-            this.filesListBox.Location = new System.Drawing.Point(84, 167);
-            this.filesListBox.Name = "filesListBox";
-            this.filesListBox.Size = new System.Drawing.Size(628, 121);
-            this.filesListBox.TabIndex = 4;
-            // 
             // listFilesBtn
             // 
             this.listFilesBtn.Location = new System.Drawing.Point(84, 123);
@@ -90,27 +84,42 @@
             // 
             // convertBtn
             // 
-            this.convertBtn.Location = new System.Drawing.Point(84, 312);
+            this.convertBtn.Location = new System.Drawing.Point(84, 320);
             this.convertBtn.Name = "convertBtn";
             this.convertBtn.Size = new System.Drawing.Size(144, 23);
             this.convertBtn.TabIndex = 6;
             this.convertBtn.Text = "Extraer imágenes";
             this.convertBtn.UseVisualStyleBackColor = true;
-            this.convertBtn.Click += new System.EventHandler(this.convertBtn_Click);
             // 
-            // MainForm
+            // imageList
             // 
+            this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+            // 
+            // listView
+            // 
+            this.listView.HideSelection = false;
+            this.listView.Location = new System.Drawing.Point(84, 178);
+            this.listView.Name = "listView";
+            this.listView.Size = new System.Drawing.Size(628, 119);
+            this.listView.TabIndex = 7;
+            this.listView.UseCompatibleStateImageBehavior = false;
+            this.listView.DoubleClick += new System.EventHandler(this.listView_DoubleClick);
+            // 
+            // MainFor
+            // 
+            this.AccessibleName = "MainForm";
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(882, 568);
+            this.Controls.Add(this.listView);
             this.Controls.Add(this.convertBtn);
             this.Controls.Add(this.listFilesBtn);
-            this.Controls.Add(this.filesListBox);
             this.Controls.Add(this.chooseFolderBtn);
             this.Controls.Add(this.explorerTextBox);
             this.Controls.Add(this.endDateTimePicker);
             this.Controls.Add(this.startDateTimePicker);
-            this.AccessibleName = "MainForm";
             this.Text = "Exportador de videos 0.1";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -124,9 +133,10 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
         private System.Windows.Forms.TextBox explorerTextBox;
         private System.Windows.Forms.Button chooseFolderBtn;
-        private System.Windows.Forms.ListBox filesListBox;
         private System.Windows.Forms.Button listFilesBtn;
         private System.Windows.Forms.Button convertBtn;
+        private System.Windows.Forms.ImageList imageList;
+        private System.Windows.Forms.ListView listView;
     }
 }
 

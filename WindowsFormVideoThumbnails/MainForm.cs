@@ -13,7 +13,7 @@ using System.Xml.Linq;
 
 namespace WindowsFormVideoThumbnails
 {
-    public partial class MainForm : Form
+    public partial class MainFor : Form
     {
         private const string DATA_URI = "data.xml";
         private const string Name = "directoryFolder";
@@ -21,7 +21,7 @@ namespace WindowsFormVideoThumbnails
         private string _directoryName = default;
         private XDocument _xmlData = default;
 
-        public MainForm()
+        public MainFor()
         {
             InitializeComponent();
             LoadData();
@@ -65,7 +65,7 @@ namespace WindowsFormVideoThumbnails
 
         private void ClearFiles()
         {
-            this.filesListBox.Items.Clear();
+            this.listView.Items.Clear();
             this._filesInfo = default;
         }
 
@@ -80,13 +80,7 @@ namespace WindowsFormVideoThumbnails
 
             if (this._filesInfo.Any())
             {
-                this.filesListBox.BeginUpdate();
-                foreach (var fileInfo in _filesInfo)
-                {
-                    this.filesListBox.Items.Add(String.Format("{0} - {1}", fileInfo.Name, fileInfo.CreationTime.ToString("dddd, dd MMMM yyyy hh:mm tt")));
-
-                }
-                this.filesListBox.EndUpdate();
+                ConvertAndListImages();
             }
             else
             {
@@ -94,32 +88,84 @@ namespace WindowsFormVideoThumbnails
             }
         }
 
-        private void convertBtn_Click(object sender, EventArgs e)
+        private void DeleteDirectory(string path)
+        {
+            foreach (string directory in Directory.GetDirectories(path))
+            {
+                DeleteDirectory(directory);
+            }
+
+            try
+            {
+                Directory.Delete(path, true);
+            }
+            catch (IOException)
+            {
+                Directory.Delete(path, true);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Directory.Delete(path, true);
+            }
+        }
+
+        private void ConvertAndListImages()
         {
             if (this._filesInfo != default && this._filesInfo.Any())
             {
                 var fmmpeg = new NReco.VideoConverter.FFMpegConverter();
-                this.folderBrowserDialog.Description = "Seleccione donde quiere guardar las imágenes de los videos";
-                if (this.folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                var path = "temporal";
+                if (Directory.Exists(path))
                 {
-                    var path = this.folderBrowserDialog.SelectedPath;
-                    DirectoryInfo directoryInfo = default;
-                    foreach (var fileInfo in this._filesInfo)
-                    {
-                        directoryInfo = Directory.CreateDirectory(String.Format("{0}/{1}", path, _directoryName));
-                        fmmpeg.GetVideoThumbnail(fileInfo.FullName, String.Format("{0}/{1}.jpg", directoryInfo.FullName, fileInfo.Name.Replace(".mp4", String.Empty)), 2f);
-                    }
+                    DeleteDirectory(path);
+                }
+                DirectoryInfo directoryInfo = default;
+                foreach (var fileInfo in this._filesInfo)
+                {
+                    directoryInfo = Directory.CreateDirectory(String.Format("{0}/{1}", path, _directoryName));
+                    fmmpeg.GetVideoThumbnail(fileInfo.FullName, String.Format("{0}/{1}.jpg", directoryInfo.FullName, fileInfo.Name.Replace(".mp4", String.Empty)), 2f);
+                }
 
-                    if (MessageBox.Show(String.Format("Imágenes creadas con éxito en {0}", directoryInfo.FullName)) == DialogResult.OK)
+                var files = directoryInfo.GetFiles("*.jpg", SearchOption.AllDirectories);
+                foreach (var image in files)
+                {
+                    try
                     {
-                        Process.Start(directoryInfo.FullName);
+                        this.imageList.Images.Add(Image.FromFile(image.FullName));
+                    }
+                    catch (Exception)
+                    {
                     }
                 }
+                this.listView.View = View.LargeIcon;
+                this.imageList.ImageSize = new Size(128, 128);
+                this.listView.LargeImageList = this.imageList;
+
+                for (int i = 0; i < this.imageList.Images.Count; i++)
+                {
+                    this.listView.Items.Add(new ListViewItem { ImageIndex = i });
+                }
+
+            }
+        }
+
+        private void StoreImages()
+        {
+            this.folderBrowserDialog.Description = "Seleccione donde quiere guardar las imágenes de los videos";
+            if (this.folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {                
+                var path = this.folderBrowserDialog.SelectedPath;
+                DirectoryInfo directoryInfo = Directory.CreateDirectory(String.Format("{0}/{1}", path, _directoryName));
             }
             else
             {
                 MessageBox.Show("Por favor seleccione carpeta de las grabaciones, fechas y click en listar videos, se necesita al menos un video para poder obtener sus imágenes");
             }
+        }
+
+        private void listView_DoubleClick(object sender, EventArgs e)
+        {
+            Console.WriteLine("hola");
         }
     }
 }
